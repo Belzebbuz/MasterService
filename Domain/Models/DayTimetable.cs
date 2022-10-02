@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Shared.Exceptions.ModelsExceptions;
 
 namespace Domain.Models;
 
@@ -21,10 +22,21 @@ public class DayTimetable : AuditableEntity<Guid>, IAggregateRoot
 
 		while (endOrderTime <= EndWorkTime)
 		{
-			Schedule.Add(new ClientOrder(newOrderTime, endOrderTime));
+			Schedule.Add(new (newOrderTime, endOrderTime));
 			newOrderTime = endOrderTime;
 			endOrderTime = newOrderTime.AddHours(interval);
 		}
 		return Schedule;
+	}
+
+	public void AddEmptyClientOrder(DateTime startTime, DateTime endTime)
+	{
+		if (Schedule == null)
+			Schedule = new ();
+
+		if(Schedule.Any(x => x.StartTime < endTime && startTime < x.EndTime))
+			throw new WrongClientOrderTimeRange();
+
+		Schedule.Add(new(startTime, endTime));
 	}
 }

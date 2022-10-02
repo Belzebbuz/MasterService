@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Auth;
 using Infrastructure.Common;
 using Infrastructure.Context;
+using Infrastructure.Cors;
 using Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,8 @@ public static class Startup
 			.AddPersistence(config)
 			.AddScoped<ExceptionMiddleware>()
 			.AddScoped<RequestLoggingMiddleware>()
-			.AddScoped<ResponseLoggingMiddleware>();
+			.AddScoped<ResponseLoggingMiddleware>()
+			.AddCorsPolicy();
 		return services;
 	}
 
@@ -27,6 +29,7 @@ public static class Startup
 		app.UseStaticFiles();
 		app.UseMiddleware<ExceptionMiddleware>();
 		app.UseRouting();
+		app.UseCorsPolicy();
 		app.UseAuthentication();
 		app.UseMiddleware<CurrentUserMiddleware>();
 		app.UseAuthorization();

@@ -29,17 +29,17 @@ public class TokenService : ITokenService
 		var user = await _userManager.FindByEmailAsync(request.Email.Trim().Normalize());
 		if (user is null)
 		{
-			throw new UnauthorizedException("auth.failed");
+			throw new UnauthorizedException("Пользователь не найден");
 		}
 
 		if (!user.IsActive)
 		{
-			throw new UnauthorizedException("identity.usernotactive");
+			throw new UnauthorizedException("Пользователь не активен");
 		}
 
 		if (!await _userManager.CheckPasswordAsync(user, request.Password))
 		{
-			throw new UnauthorizedException("identity.invalidcredentials");
+			throw new UnauthorizedException("Неправильный e-mail или пароль");
 		}
 
 		return await GenerateTokensAndUpdateUser(user, ipAddress);

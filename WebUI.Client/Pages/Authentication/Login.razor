@@ -1,0 +1,27 @@
+﻿@page "/login"
+@layout MainLayout
+@attribute [AllowAnonymous]
+
+<EditForm Model="@_tokenRequest" OnValidSubmit="SubmitAsync">
+    <FluentValidationValidator @ref="_fluentValidationValidator"/>
+    <MudGrid>
+        <DataAnnotationsValidator />
+        <MudItem xs="12">
+            <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"
+                          @bind-Value="_tokenRequest.Email" For="@(() => _tokenRequest.Email)" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField Label="Пароль" Variant="Variant.Outlined"
+                          @bind-Value="_tokenRequest.Password" For="@(() => _tokenRequest.Password)"
+                          InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" 
+                          OnAdornmentClick="TogglePasswordVisibility" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton ButtonType="ButtonType.Submit" 
+            Variant="Variant.Filled" 
+            Disabled="@(!Validated)" 
+            Color="Color.Primary" 
+            Size="Size.Large" Style="width: 100%;">Войти</MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

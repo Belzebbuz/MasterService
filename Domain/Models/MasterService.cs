@@ -25,17 +25,19 @@ public class MasterService : AuditableEntity<Guid>, IAggregateRoot
 
 	public void UpdatePriceValue(Guid id, decimal value)
 	{
+		if(Prices == null)
+			throw new ArgumentNullException(nameof(Prices));
 		var price = Prices.FirstOrDefault(x => x.Id == id);
 		if (price == null)
-			throw new ArgumentNullException($"{nameof(price)} is null of service: {Name} have no price with id: {id}");
+			throw new ArgumentNullException($"Service: {Name} have no price with id: {id}");
 		price.Value = value;
 	}
 
 	public decimal GetPrice(DateTime dateTime)
 	{
 		var value = Prices?
-			.Where(x => x.Date < dateTime)?
-			.OrderByDescending(x => x.Date)?
+			.Where(x => x.Date < dateTime)
+			.OrderByDescending(x => x.Date)
 			.FirstOrDefault()?.Value;
 		if (value == null)
 		{
@@ -49,7 +51,7 @@ public class MasterService : AuditableEntity<Guid>, IAggregateRoot
 	{
 		if (Prices == null)
 			Prices = new();
-		Prices.Add(new MasterServicePrice(dateTime, Value));
+		Prices.Add(new (dateTime, Value));
 	}
 
 	public void AddExamplePhoto(string url)
@@ -60,7 +62,7 @@ public class MasterService : AuditableEntity<Guid>, IAggregateRoot
 		if(Examples == null)
 			Examples = new List<MasterServicePhoto>();
 
-		Examples.Add(new MasterServicePhoto(url));
+		Examples.Add(new (url));
 	}
 
 	public void RemoveExamplePhoto(Guid id)

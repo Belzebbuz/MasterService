@@ -36,4 +36,17 @@ public class UserService : IUserService
 		await _userManager.AddToRoleAsync(user, UserRoles.Basic);
 		return await Result.SuccessAsync();
 	}
+
+	public async Task<IResult<IDR_003>> GetUserAsync(IDM_003 message)
+	{
+		var user = await _userManager.FindByIdAsync(message.UserId);
+		if (user == null)
+		{
+			return await Result<IDR_003>.FailAsync("Пользователь не найден!");
+		}
+		else
+		{
+			return await Result<IDR_003>.SuccessAsync(new IDR_003(user.Id, user.FullName, user.Email, user.PhoneNumber));
+		}
+	}
 }

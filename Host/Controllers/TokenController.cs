@@ -6,6 +6,7 @@ using Shared.Wrapper;
 
 namespace Host.Controllers;
 
+[Route("api/identity/token")]
 public class TokenController : BaseApiController
 {
 	private readonly ITokenService _tokenService;

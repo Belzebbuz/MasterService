@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure.Cors
+namespace Infrastructure.Cors;
+
+public static class Startup
 {
-	public class Startup
+	private const string CorsPolicy = nameof(CorsPolicy);
+	internal static IServiceCollection AddCorsPolicy(this IServiceCollection services)
 	{
-
+		return services.AddCors(opt =>
+	   opt.AddPolicy(CorsPolicy, policy =>
+		   policy.AllowAnyHeader()
+			   .AllowAnyMethod()
+			   .AllowAnyOrigin()));
 	}
+	internal static IApplicationBuilder UseCorsPolicy(this IApplicationBuilder app) => app.UseCors(CorsPolicy);
 }
