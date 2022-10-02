@@ -35,9 +35,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Tests", "Domain.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{581AAAA5-473D-4912-85CE-BC3DE195C0AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI.Application", "WebUI.Application\WebUI.Application.csproj", "{11575CB1-6036-4E77-A2E2-82E601F4BB88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI.Application", "WebUI.Application\WebUI.Application.csproj", "{11575CB1-6036-4E77-A2E2-82E601F4BB88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI.Infrastructure", "WebUI.Infrastructure\WebUI.Infrastructure.csproj", "{088701A3-87E4-46D0-B9AF-CBD38DA8F637}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI.Infrastructure", "WebUI.Infrastructure\WebUI.Infrastructure.csproj", "{088701A3-87E4-46D0-B9AF-CBD38DA8F637}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{437B8A97-EF99-49F5-A6A4-D3121D708C45}"
+	ProjectSection(SolutionItems) = preProject
+		GitVersion.yml = GitVersion.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
