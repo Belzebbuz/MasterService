@@ -34,4 +34,10 @@ public class UserManager : IUserManager
 		var response = await _httpClient.PostAsJsonAsync(UserEndpoints.Register, registerRequest);
 		return await response.ToResult();
 	}
+
+	public async Task<IResult> UpdateRolesAsync(IDM_005 request)
+	{
+		var response = await _httpClient.PutAsJsonAsync(UserEndpoints.GetUserRoles(request.UserId), request);
+		return await response.ToResult();
+	}
 }

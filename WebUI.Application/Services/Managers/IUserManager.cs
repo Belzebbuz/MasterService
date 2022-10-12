@@ -8,4 +8,5 @@ public interface IUserManager : ITransientService
     Task<IResult<List<UserResponse>>> GetAllAsync();
     Task<IResult<IDR_003>> GetAsync(string userId);
     Task<IResult> RegisterUserAsync(IDM_001 registerRequest);
+    Task<IResult> UpdateRolesAsync(IDM_005 request);
 }

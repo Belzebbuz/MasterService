@@ -8,7 +8,6 @@ public static class UserEndpoints
 	{
 		return $"api/identity/user/{userId}";
 	}
-
 	public static string GetUserRoles(string userId)
 	{
 		return $"api/identity/user/roles/{userId}";

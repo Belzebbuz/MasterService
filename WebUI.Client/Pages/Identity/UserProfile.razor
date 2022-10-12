@@ -1,0 +1,69 @@
+﻿@page "/identity/user-profile/{Id}"
+@attribute [Authorize(Roles = UserRoles.Admin)]
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-2">@Title</MudText>
+<MudText Color="Color.Surface" Class="mb-4">@Description</MudText>
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>Профиль</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        <MudAvatar Color="Color.Secondary" Style="height:250px; width:250px;">@_firstLetterOfName</MudAvatar>
+                    </div>
+                    <MudText Typo="Typo.h6" Align="Align.Center">@_fullName</MudText>
+                    <MudText Align="Align.Center">@_email</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>Данные</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="Полное имя" Variant="Variant.Text">@_fullName</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="Номер телефона" Variant="Variant.Text">@_phoneNumber</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="Email" Variant="Variant.Text">@_email</MudField>
+                        </MudItem>
+                        <MudItem md="12" xs="12">
+                            <MudTable Hover="true" Elevation="25" Items="UserRolesList">
+                                <ToolBarContent>
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveRolesAsync" ButtonType="ButtonType.Submit">Сохранить роли</MudButton>
+                                </ToolBarContent>
+                                <HeaderContent>
+                                    <MudTh>Название</MudTh>
+                                    <MudTh>Выбрано</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Название">@context.Name</MudTd>
+                                    <MudTd DataLabel="Выбрано">
+                                        <MudCheckBox @bind-Checked="@context.Selected" Color="Color.Secondary" />
+                                    </MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+    </MudGrid>
+}

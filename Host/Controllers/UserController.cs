@@ -30,4 +30,9 @@ public class UserController : BaseApiController
 	[Authorize(Roles = UserRoles.Admin)]
 	public async Task<IResult<IDR_004>> GetAllAsync()
 	 => await _userService.GetAllAsync();
+
+	[HttpPut("roles/{id}")]
+	[Authorize(Roles = UserRoles.Admin)]
+	public async Task<IResult> UpdateRolesAsync(IDM_005 message)
+	 => await _userService.UpdateRolesAsync(message);
 }

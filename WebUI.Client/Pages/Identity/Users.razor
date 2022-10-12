@@ -7,14 +7,51 @@
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 }
 else{
-    <MudTable Hover="true" Elevation="25" Items="_usersList" Filter="new Func<UserResponse, bool>(Search)">
+    <MudTable Hover="true" Class="mt-3" Elevation="25" Items="_usersList" Filter="new Func<UserResponse, bool>(Search)">
         <ToolBarContent>
-            <div class="justify-center mud-text-align-center">
-                <MudButton DisableElevation Variant="Variant.Filled" 
-                Color="Color.Primary" OnClick="(() => InvokeNewUserDialog())" 
-                StartIcon="@Icons.Material.Filled.Add" 
-                IconColor="Color.Surface">Новый пользователь</MudButton>
+            <div class="justify-center">
+                <MudTooltip Text="Создать нового пользователя">
+                    <MudIconButton DisableElevation Variant="Variant.Filled" 
+                        Color="Color.Primary" OnClick="(() => InvokeNewUserDialog())" 
+                        Icon="@Icons.Material.Filled.PersonAdd"/>
+                </MudTooltip>
+                 <MudTooltip Text="Обновить список">
+                    <MudIconButton DisableElevation Variant="Variant.Filled"
+                               OnClick="GetUsersAsync" Icon="@Icons.Material.Filled.Refresh"
+                               Color="Color.Secondary"/>
+                 </MudTooltip>
+                
             </div>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" 
+                Immediate="true" FullWidth=false Placeholder="Найти пользователя" 
+                Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" 
+                IconSize="Size.Medium" Class="mt-0 mb-3"/>
         </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.FullName)">Полное имя</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.PhoneNumber)">Номер</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align:center">Профиль</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Полное имя">
+                <MudHighlighter Text="@context.FullName" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Email">
+                <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Номер">
+                <MudHighlighter Text="@context.PhoneNumber" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Профиль" Style="text-align:center">
+                <MudTooltip Text="Посмотреть профиль">
+                    <MudIconButton Icon="@Icons.Material.Filled.Person" Size="Size.Small" OnClick="(()=>ViewProfile(context.Id))"></MudIconButton>
+                </MudTooltip>
+             </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="Элементов на странице" InfoFormat="Формат" />
+        </PagerContent>
     </MudTable>
 }

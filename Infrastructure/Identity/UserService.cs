@@ -15,13 +15,18 @@ public class UserService : IUserService
 {
 	private readonly UserManager<AppUser> _userManager;
 	private readonly IMapper _mapper;
-	private readonly IConfiguration _configuration;
+	private readonly string _rootUser;
+	private readonly RoleManager<IdentityRole> _roleManager;
 
-	public UserService(UserManager<AppUser> userManager, IMapper mapper, IConfiguration configuration)
+	public UserService(UserManager<AppUser> userManager, 
+		IMapper mapper, 
+		IConfiguration configuration,
+		RoleManager<IdentityRole> roleManager)
 	{
 		_userManager = userManager;
 		_mapper = mapper;
-		_configuration = configuration;
+		_rootUser = configuration.GetValue<string>("SecuritySettings:RootAdmin");
+		_roleManager = roleManager;
 	}
 	public async Task<IResult> CreateUserAsync(IDM_001 message)
 	{
@@ -41,7 +46,7 @@ public class UserService : IUserService
 		}
 
 		await _userManager.AddToRoleAsync(user, UserRoles.Basic);
-		if(user.Email == _configuration.GetValue<string>("SecuritySettings:RootAdmin"))
+		if(user.Email == _rootUser)
 		{
 			await _userManager.AddToRoleAsync(user, UserRoles.Admin);
 			await _userManager.AddToRoleAsync(user, UserRoles.Master);
@@ -59,14 +64,48 @@ public class UserService : IUserService
 	public async Task<IResult<IDR_003>> GetUserAsync(IDM_003 message)
 	{
 		var user = await _userManager.FindByIdAsync(message.UserId);
+
 		if (user == null)
-		{
 			return await Result<IDR_003>.FailAsync("Пользователь не найден!");
-		}
-		else
+
+		var userDTO = _mapper.Map<IDR_003>(user);
+		await AddRolesToDto(user, userDTO);
+		return await Result<IDR_003>.SuccessAsync(userDTO);
+	}
+
+	public async Task<IResult> UpdateRolesAsync(IDM_005 message)
+	{
+		var user = await _userManager.FindByIdAsync(message.UserId);
+		if (user.Email == _rootUser)
+			return await Result.FailAsync("Недоступно для данного пользователя");
+
+		var roles = await _userManager.GetRolesAsync(user);
+		var selectedRoles = message.UserRoles.Where(x => x.Selected).ToList();
+
+		var result = await _userManager.RemoveFromRolesAsync(user, roles);
+		result = await _userManager.AddToRolesAsync(user, selectedRoles.Select(y => y.Name));
+		return await Result.SuccessAsync("Роли обновлены");
+	}
+
+	private async Task AddRolesToDto(AppUser user, IDR_003 userDTO)
+	{
+		var allRoles = await _roleManager.Roles.ToListAsync();
+		userDTO.Roles = new();
+		foreach (var role in allRoles)
 		{
-			var userDTO = _mapper.Map<IDR_003>(user);
-			return await Result<IDR_003>.SuccessAsync(userDTO);
+			var userRoleModel = new UserRoleModel()
+			{
+				Name = role.Name
+			};
+			if (await _userManager.IsInRoleAsync(user, role.Name))
+			{
+				userRoleModel.Selected = true;
+			}
+			else
+			{
+				userRoleModel.Selected = false;
+			}
+			userDTO.Roles.Add(userRoleModel);
 		}
 	}
 }

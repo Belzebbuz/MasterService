@@ -59,5 +59,9 @@ namespace WebUI.Client.Pages.Identity
 				await GetUsersAsync();
 			}
 		}
+		private void ViewProfile(string userId)
+		{
+			_navigationManager.NavigateTo($"/identity/user-profile/{userId}");
+		}
 	}
 }
