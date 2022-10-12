@@ -1,0 +1,15 @@
+﻿@using WebUI.Client.Share.Components
+
+<UserCard />
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
+
+    <AuthorizeView Roles="@UserRoles.Admin">
+        <Authorized>
+            <MudListSubheader Class="mt-2 mb-n2">Администрирование</MudListSubheader>
+            <MudNavLink Href="/identity/users" Icon="@Icons.Material.Outlined.Person">
+                Пользователи
+            </MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+</MudNavMenu>

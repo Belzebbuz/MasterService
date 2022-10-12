@@ -30,7 +30,7 @@ public class ResponseLoggingMiddleware : IMiddleware
 
 		string email = _currentUser.GetUserEmail() is string userEmail ? userEmail : "Anonymous";
 		var userId = _currentUser.GetUserId();
-		if (userId != Guid.Empty) LogContext.PushProperty("UserId", userId);
+		if (userId != Guid.Empty) LogContext.PushProperty("Id", userId);
 		LogContext.PushProperty("UserEmail", email);
 		LogContext.PushProperty("StatusCode", context.Response.StatusCode);
 		LogContext.PushProperty("ResponseTimeUTC", DateTime.UtcNow);

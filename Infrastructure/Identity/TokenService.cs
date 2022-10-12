@@ -92,7 +92,7 @@ public class TokenService : ITokenService
 	{
 		var token = new JwtSecurityToken(
 			claims: claims,
-			expires: DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInDays),
+			expires: DateTime.UtcNow.AddDays(_jwtSettings.TokenExpirationInDays),
 			signingCredentials: signingCredentials);
 		var tokenHandler = new JwtSecurityTokenHandler();
 		return tokenHandler.WriteToken(token);

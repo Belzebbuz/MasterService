@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 using WebUI.Application.Services;
 using WebUI.Infrastructure;
 using WebUI.Infrastructure.Authentication;
@@ -11,6 +12,7 @@ namespace WebUI.Client;
 
 public static class BuilderExtensions
 {
+	private static string ClientName = "Love.Nails.Api";
 	public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder)
 	{
 		builder.Services.AddServices();
@@ -30,13 +32,13 @@ public static class BuilderExtensions
 		builder.Services.AddTransient<AuthenticationHeaderHandler>();
 		builder.Services.AddScoped(sp =>
 			sp.GetRequiredService<IHttpClientFactory>()
-			.CreateClient("Love.Nails.Api"))
-			.AddHttpClient("Love.Nails.Api", client =>
+			.CreateClient(ClientName).EnableIntercept(sp))
+			.AddHttpClient(ClientName, client =>
 			{
-				client.DefaultRequestHeaders.AcceptLanguage.Clear();
 				client.BaseAddress = new Uri("http://localhost:5209");
 			})
 			.AddHttpMessageHandler<AuthenticationHeaderHandler>();
+		builder.Services.AddHttpClientInterceptor();
 		return builder;
 	}
 	

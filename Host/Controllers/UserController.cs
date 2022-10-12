@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Domain.Models.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Messages.Identity;
@@ -16,13 +17,17 @@ public class UserController : BaseApiController
 		_userService = userService;
 	}
 
-	[HttpPost("self-register")]
-	[AllowAnonymous]
-	public async Task<IResult> SelfRegisterAsync(IDM_001 message)
+	[HttpPost]
+	public async Task<IResult> RegisterAsync(IDM_001 message)
 	 => await _userService.CreateUserAsync(message);
 
 	[HttpGet("{id}")]
 	[Authorize]
 	public async Task<IResult<IDR_003>> GetByIdAsync(string id)
 	 => await _userService.GetUserAsync(new IDM_003(id));
+
+	[HttpGet]
+	[Authorize(Roles = UserRoles.Admin)]
+	public async Task<IResult<IDR_004>> GetAllAsync()
+	 => await _userService.GetAllAsync();
 }

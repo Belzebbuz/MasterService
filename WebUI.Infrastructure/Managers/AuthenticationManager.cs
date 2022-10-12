@@ -58,7 +58,7 @@ public class AuthenticationManager : IAuthenticationManager
 		}
 		catch (Exception ex)
 		{
-			return await Result.FailAsync(ex.InnerException.Message);
+			return await Result.FailAsync(ex.GetBaseException().Message);
 		}
 
 	}

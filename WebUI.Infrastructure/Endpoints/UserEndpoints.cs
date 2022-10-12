@@ -1,8 +1,9 @@
 ﻿namespace WebUI.Infrastructure.Endpoints;
 
 public static class UserEndpoints
-    {
+{
 	public static string GetAll = "api/identity/user";
+	public static string Register = "api/identity/user";
 	public static string Get(string userId)
 	{
 		return $"api/identity/user/{userId}";

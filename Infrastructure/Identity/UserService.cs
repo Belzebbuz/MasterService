@@ -1,8 +1,11 @@
 ﻿using Application.Common;
 using Domain.Models;
 using Domain.Models.Constants;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Shared.Messages.Identity;
 using Shared.Wrapper;
 
@@ -11,10 +14,14 @@ namespace Infrastructure.Identity;
 public class UserService : IUserService
 {
 	private readonly UserManager<AppUser> _userManager;
+	private readonly IMapper _mapper;
+	private readonly IConfiguration _configuration;
 
-	public UserService(UserManager<AppUser> userManager)
+	public UserService(UserManager<AppUser> userManager, IMapper mapper, IConfiguration configuration)
 	{
 		_userManager = userManager;
+		_mapper = mapper;
+		_configuration = configuration;
 	}
 	public async Task<IResult> CreateUserAsync(IDM_001 message)
 	{
@@ -22,7 +29,7 @@ public class UserService : IUserService
 		{
 			Email = message.Email,
 			FullName = message.FullName,
-			UserName = message.UserName,
+			UserName = message.Email,
 			PhoneNumber = message.PhoneNumber,
 			IsActive = true
 		};
@@ -34,7 +41,19 @@ public class UserService : IUserService
 		}
 
 		await _userManager.AddToRoleAsync(user, UserRoles.Basic);
-		return await Result.SuccessAsync();
+		if(user.Email == _configuration.GetValue<string>("SecuritySettings:RootAdmin"))
+		{
+			await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+			await _userManager.AddToRoleAsync(user, UserRoles.Master);
+		}
+		return await Result.SuccessAsync($"Пользователь {user.Email} успешно создан!");
+	}
+
+	public async Task<IResult<IDR_004>> GetAllAsync()
+	{
+		var users = await _userManager.Users.ToListAsync();
+		var result = _mapper.Map<List<UserResponse>>(users);
+		return await Result<IDR_004>.SuccessAsync(new IDR_004(result));
 	}
 
 	public async Task<IResult<IDR_003>> GetUserAsync(IDM_003 message)
@@ -46,7 +65,8 @@ public class UserService : IUserService
 		}
 		else
 		{
-			return await Result<IDR_003>.SuccessAsync(new IDR_003(user.Id, user.FullName, user.Email, user.PhoneNumber));
+			var userDTO = _mapper.Map<IDR_003>(user);
+			return await Result<IDR_003>.SuccessAsync(userDTO);
 		}
 	}
 }

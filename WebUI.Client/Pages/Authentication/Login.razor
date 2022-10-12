@@ -7,6 +7,16 @@
     <MudGrid>
         <DataAnnotationsValidator />
         <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText Typo="Typo.h4">Вход</MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText>Нет аккаунта? <MudLink Href="/register">Регистрация</MudLink></MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
             <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"
                           @bind-Value="_tokenRequest.Email" For="@(() => _tokenRequest.Email)" />
         </MudItem>

@@ -3,6 +3,8 @@ using Infrastructure.Common;
 using Infrastructure.Context;
 using Infrastructure.Cors;
 using Infrastructure.Middlewares;
+using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +22,9 @@ public static class Startup
 			.AddScoped<ExceptionMiddleware>()
 			.AddScoped<RequestLoggingMiddleware>()
 			.AddScoped<ResponseLoggingMiddleware>()
-			.AddCorsPolicy();
+			.AddCorsPolicy()
+			.AddScoped<IMapper, ServiceMapper>()
+			.AddSingleton(new TypeAdapterConfig());
 		return services;
 	}
 

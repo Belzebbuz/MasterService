@@ -1,0 +1,20 @@
+﻿@page "/identity/users"
+@attribute [Authorize(Roles = UserRoles.Admin)]
+
+<MudText Typo="Typo.h5" Color="Color.Primary">Пользователи</MudText>
+
+@if(!_loaded){
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else{
+    <MudTable Hover="true" Elevation="25" Items="_usersList" Filter="new Func<UserResponse, bool>(Search)">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                <MudButton DisableElevation Variant="Variant.Filled" 
+                Color="Color.Primary" OnClick="(() => InvokeNewUserDialog())" 
+                StartIcon="@Icons.Material.Filled.Add" 
+                IconColor="Color.Surface">Новый пользователь</MudButton>
+            </div>
+        </ToolBarContent>
+    </MudTable>
+}
