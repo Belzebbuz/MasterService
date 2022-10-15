@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -26,3 +27,6 @@
 @inject IAuthenticationManager _authenticationManager
 @inject IUserManager _userManager
 @inject IDialogService _dialogService
+@inject IAccountManager _accountManager
+@inject ILocalStorageService _localStorage
+@inject IMasterManager _masterManager

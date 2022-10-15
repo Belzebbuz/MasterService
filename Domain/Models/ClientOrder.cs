@@ -6,19 +6,30 @@ public class ClientOrder : AuditableEntity<Guid>, IAggregateRoot
 {
 	public DateTime StartTime { get; private set; }
 	public DateTime EndTime { get; private set; }
-	public List<MasterService>? Services { get; set; }
-	public AppUser? Client { get; set; }
-	public bool Confirmed { get; set; }
-	public bool Complited { get; set; }
-	public bool Canceled { get; set; }
-	public List<OrderComment>? Comments { get; set; }
-	public ClientOrder(DateTime startTime, DateTime endTime)
+	public AppUser? Client { get; private set; }
+	public bool Confirmed { get; private set; }
+	public bool Complited { get; private set; }
+	public bool Canceled { get; private set; }
+
+	private HashSet<MasterService> _services;
+	public IReadOnlyCollection<MasterService> Services => _services.ToList();
+
+	private HashSet<OrderComment> _comments;
+	public IReadOnlyCollection<OrderComment> Comments => _comments.ToList();
+
+
+	private ClientOrder() { }
+
+	public static ClientOrder CreateEmpty(DateTime startTime, DateTime endTime)
 	{
 		if (startTime > endTime)
 			throw new ArgumentOutOfRangeException($"{nameof(StartTime)} can't be more than {nameof(EndTime)}");
 
-		StartTime = startTime;
-		EndTime = endTime;
+		return new()
+		{
+			StartTime = startTime,
+			EndTime = endTime
+		};
 	}
 
 	public void AddComment(string value, string authorId)
@@ -26,18 +37,17 @@ public class ClientOrder : AuditableEntity<Guid>, IAggregateRoot
 		if(string.IsNullOrEmpty(value))
 			throw new ArgumentNullException(nameof(value));
 
-		if(Comments == null)
-			Comments = new List<OrderComment>();
+		if(_comments == null)
+			_comments = new();
 
-		Comments.Add(new OrderComment(value, authorId));
+		_comments.Add(new OrderComment(value, authorId));
 	}
 
 	public void ChangeCommentValue(Guid id, string value)
 	{
-		if (Comments == null)
-			throw new ArgumentNullException(nameof(Comments));
+		if (_comments == null) throw new InvalidOperationException($"{nameof(Comments)} not loaded");
 
-		var comment = Comments.FirstOrDefault(x => x.Id == id);
+		var comment = _comments.SingleOrDefault(x => x.Id == id);
 		if (comment == null)
 			throw new ArgumentException($"Client order:{Id}. {nameof(Comments)} have no comment with id: {id}");
 		
@@ -46,13 +56,12 @@ public class ClientOrder : AuditableEntity<Guid>, IAggregateRoot
 	
 	public void RemoveComment(Guid id)
 	{
-		if (Comments == null)
-			throw new ArgumentNullException(nameof(Comments));
+		if (_comments == null) throw new InvalidOperationException($"{nameof(Comments)} not loaded"); ;
 
-		var comment = Comments.FirstOrDefault(x => x.Id == id);
+		var comment = _comments.SingleOrDefault(x => x.Id == id);
 		if (comment == null)
 			throw new ArgumentException($"Client order:{Id}. {nameof(Comments)} have no comment with id: {id}");
 
-		Comments.Remove(comment);
+		_comments.Remove(comment);
 	}
 }

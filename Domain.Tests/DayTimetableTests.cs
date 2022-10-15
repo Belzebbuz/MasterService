@@ -14,10 +14,9 @@ public class DayTimetableTests
 	{
 		var startWorkTime = DateTime.Parse("Oct 25, 2022").AddHours(startDate);
 		var endWorkTime = DateTime.Parse("Oct 25, 2022").AddHours(endDate);
-		var timetable = new DayTimetable(startWorkTime, endWorkTime);
-		timetable.FillEmptySchedule(interval);
-		Assert.NotNull(timetable.Schedule);
-		Assert.IsTrue(timetable.Schedule.Count() == expectedOrders);
+		var timetable = DayTimetable.Create(startWorkTime, endWorkTime, true, interval);
+		Assert.NotNull(timetable.ClientOrders);
+		Assert.IsTrue(timetable.ClientOrders.Count() == expectedOrders);
 	}
 
 	[Test]
@@ -25,14 +24,13 @@ public class DayTimetableTests
 	{
 		var startWorkTime = DateTime.Parse("Oct 25, 2022").AddHours(9);
 		var endWorkTime = DateTime.Parse("Oct 25, 2022").AddHours(18);
-		var timetable = new DayTimetable(startWorkTime, endWorkTime);
-
+		var timetable = DayTimetable.Create(startWorkTime, endWorkTime, false);
 		timetable.AddEmptyClientOrder(startWorkTime, startWorkTime.AddHours(1));
-		Assert.NotNull(timetable.Schedule);
-		Assert.IsTrue(timetable.Schedule.Count == 1);
+		Assert.NotNull(timetable.ClientOrders);
+		Assert.IsTrue(timetable.ClientOrders.Count == 1);
 
 		timetable.AddEmptyClientOrder(startWorkTime.AddHours(1), startWorkTime.AddHours(2));
-		Assert.IsTrue(timetable.Schedule.Count == 2);
+		Assert.IsTrue(timetable.ClientOrders.Count == 2);
 
 		Assert.That(() => timetable.AddEmptyClientOrder(startWorkTime, startWorkTime.AddHours(1.5)), Throws.Exception);
 		Assert.That(() => timetable.AddEmptyClientOrder(startWorkTime.AddHours(1), startWorkTime.AddHours(1.5)), Throws.Exception);
@@ -40,8 +38,8 @@ public class DayTimetableTests
 		Assert.That(() => timetable.AddEmptyClientOrder(startWorkTime.AddHours(-1), startWorkTime.AddHours(0.5)), Throws.Exception);
 
 		timetable.AddEmptyClientOrder(startWorkTime.AddHours(2), startWorkTime.AddHours(3));
-		Assert.IsTrue(timetable.Schedule.Count == 3);
-		Assert.IsTrue(timetable.Schedule.Last().StartTime == startWorkTime.AddHours(2));
-		Assert.IsTrue(timetable.Schedule.Last().EndTime == startWorkTime.AddHours(3));
+		Assert.IsTrue(timetable.ClientOrders.Count == 3);
+		Assert.IsTrue(timetable.ClientOrders.Last().StartTime == startWorkTime.AddHours(2));
+		Assert.IsTrue(timetable.ClientOrders.Last().EndTime == startWorkTime.AddHours(3));
 	}
 }

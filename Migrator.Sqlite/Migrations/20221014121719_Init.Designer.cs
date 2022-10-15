@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Migrator.Sqlite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220925171754_Init")]
+    [Migration("20221014121719_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,10 +68,13 @@ namespace Migrator.Sqlite.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ProfilePictureDataUrl")
+                        .HasColumnType("text");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")
@@ -359,6 +362,9 @@ namespace Migrator.Sqlite.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("ValueChangedTime")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
@@ -395,7 +401,7 @@ namespace Migrator.Sqlite.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -431,22 +437,22 @@ namespace Migrator.Sqlite.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d50fe2e0-2ad4-4d7a-acc0-69f700932f41",
-                            ConcurrencyStamp = "3d150fbf-31f6-424e-b203-b69a9c6bf635",
+                            Id = "edcd5632-0a70-4ebd-9b58-926134a181c0",
+                            ConcurrencyStamp = "f29401df-5e1b-4efe-93fc-6cd77ac043de",
                             Name = "Master",
                             NormalizedName = "MASTER"
                         },
                         new
                         {
-                            Id = "c197be90-a9f4-44bd-9aad-35c6c25796f5",
-                            ConcurrencyStamp = "0cb2cf9b-8d25-42be-ad41-e42c323e024d",
+                            Id = "b11754fe-34d8-4b70-84ae-f13dc648456f",
+                            ConcurrencyStamp = "c3205d01-eb4f-4f28-a954-4132d8604e79",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d0de996f-baa4-463e-81a2-7a035bc398a9",
-                            ConcurrencyStamp = "1d15f09c-a22e-4866-b513-c2546e627e08",
+                            Id = "42e5251f-5fc5-41b2-ac5b-1cc49cd117ed",
+                            ConcurrencyStamp = "f0bd7c9b-98d7-4043-8739-e0020b696eca",
                             Name = "Basic",
                             NormalizedName = "BASIC"
                         });
@@ -487,13 +493,13 @@ namespace Migrator.Sqlite.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
@@ -509,26 +515,26 @@ namespace Migrator.Sqlite.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id", "RoleId");
+                    b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
@@ -537,7 +543,7 @@ namespace Migrator.Sqlite.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
@@ -549,7 +555,7 @@ namespace Migrator.Sqlite.Migrations
                     b.Property<string>("Value")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id", "LoginProvider", "Name");
+                    b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
@@ -561,7 +567,7 @@ namespace Migrator.Sqlite.Migrations
                         .HasForeignKey("ClientId");
 
                     b.HasOne("Domain.Models.DayTimetable", null)
-                        .WithMany("Schedule")
+                        .WithMany("ClientOrders")
                         .HasForeignKey("DayTimetableId");
 
                     b.Navigation("Client");
@@ -602,7 +608,7 @@ namespace Migrator.Sqlite.Migrations
             modelBuilder.Entity("Domain.Models.OrderComment", b =>
                 {
                     b.HasOne("Domain.Models.AppUser", "Author")
-                        .WithMany("OrderComments")
+                        .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -627,7 +633,7 @@ namespace Migrator.Sqlite.Migrations
                 {
                     b.HasOne("Domain.Models.AppUser", null)
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -636,7 +642,7 @@ namespace Migrator.Sqlite.Migrations
                 {
                     b.HasOne("Domain.Models.AppUser", null)
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -651,7 +657,7 @@ namespace Migrator.Sqlite.Migrations
 
                     b.HasOne("Domain.Models.AppUser", null)
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -660,15 +666,13 @@ namespace Migrator.Sqlite.Migrations
                 {
                     b.HasOne("Domain.Models.AppUser", null)
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Models.AppUser", b =>
                 {
-                    b.Navigation("OrderComments");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Services");
@@ -685,7 +689,7 @@ namespace Migrator.Sqlite.Migrations
 
             modelBuilder.Entity("Domain.Models.DayTimetable", b =>
                 {
-                    b.Navigation("Schedule");
+                    b.Navigation("ClientOrders");
                 });
 
             modelBuilder.Entity("Domain.Models.MasterService", b =>

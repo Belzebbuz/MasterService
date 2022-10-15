@@ -40,4 +40,10 @@ public class UserManager : IUserManager
 		var response = await _httpClient.PutAsJsonAsync(UserEndpoints.GetUserRoles(request.UserId), request);
 		return await response.ToResult();
 	}
+
+	public async Task<IResult> ToggleUserStatusAsync(IDM_009 request)
+	{
+		var response = await _httpClient.PostAsJsonAsync(UserEndpoints.ToggleUserStatus, request);
+		return await response.ToResult();
+	}
 }

@@ -1,0 +1,25 @@
+﻿<EditForm Model="@_masterServiceModel" OnValidSubmit="SubmitAsync">
+    <FluentValidationValidator @ref="_fluentValidationValidator" />
+    <MudDialog>
+        <TitleContent>
+            @{
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.DesignServices" Class="mr-3 mb-n1" />
+                    Создание услуги
+                </MudText>
+            }
+        </TitleContent>
+        <DialogContent>
+            <MudTextField For="@(() => _masterServiceModel.Name)" @bind-Value="_masterServiceModel.Name" Label="Название" />
+            <MudTextField Lines="3" For="@(() => _masterServiceModel.Description)"  @bind-Value="_masterServiceModel.Description" Label="Описание" />
+            <MudTextField For="@(() => _masterServiceModel.NewPriceValue)" @bind-Value="_masterServiceModel.NewPriceValue" Label="Начальная цена" />
+            <MudDatePicker For="@(() => _masterServiceModel.NewPriceDateTime)" @bind-Date="_masterServiceModel.NewPriceDateTime" Label="С какой даты действует цена" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="Cancel">Назад</MudButton>
+            @{
+                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Disabled="@(!Validated)" Color="Color.Success">Создать</MudButton>
+            }
+        </DialogActions>
+    </MudDialog>
+</EditForm>

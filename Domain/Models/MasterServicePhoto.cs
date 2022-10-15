@@ -2,11 +2,11 @@
 
 namespace Domain.Models;
 
-public class MasterServicePhoto : AuditableEntity<Guid>, IAggregateRoot
+public class MasterServicePhoto : AuditableEntity<Guid>
 {
 	public string ImagePath { get; private set; }
 
-	public MasterServicePhoto(string imagePath)
+	internal MasterServicePhoto(string imagePath)
 	{
 		ImagePath = imagePath;
 	}

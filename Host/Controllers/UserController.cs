@@ -35,4 +35,8 @@ public class UserController : BaseApiController
 	[Authorize(Roles = UserRoles.Admin)]
 	public async Task<IResult> UpdateRolesAsync(IDM_005 message)
 	 => await _userService.UpdateRolesAsync(message);
+
+	[HttpPost("toggle-status")]
+	public async Task<IResult> ToggleUserStatusAsync(IDM_009 message)
+	 => await _userService.ToggleUserStatusAsync(message);
 }

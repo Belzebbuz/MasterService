@@ -7,6 +7,7 @@ public interface ICurrentUser : IScopedService
 {
     string? Name { get; }
 
+    string? UserId { get; }
     Guid GetUserId();
 
     string? GetUserEmail();

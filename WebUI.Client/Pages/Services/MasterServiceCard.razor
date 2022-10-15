@@ -1,0 +1,27 @@
+﻿<MudCard>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@Service.Name</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    @if (Service.Images != null && Service.Images.Any())
+    {
+        <MudCarousel Style="height: 400px;" ShowArrows="true" ShowBullets="true" AutoCycle="true" TData="object">
+            @foreach (var image in Service.Images)
+        {
+            <MudCarouselItem Transition="Transition.Slide">
+                    <div class="d-flex" style="height:100%">
+                        <MudImage Class="mx-auto my-auto" Src="@($"data:image/jpg;base64,{image.Data}")" />
+                    </div>
+            </MudCarouselItem>
+        }
+        </MudCarousel>
+    }
+    <MudCardContent>
+        <MudText Typo="Typo.body1">@Service.Description</MudText>
+        <MudText Typo="Typo.body2">@Service.CurrentPrice</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Color="Color.Primary" OnClick="GoToMasterServiceProfileAsync">Подробнее</MudButton>
+    </MudCardActions>
+</MudCard>

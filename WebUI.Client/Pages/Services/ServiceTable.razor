@@ -1,0 +1,16 @@
+﻿@if(!_isLoaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid Class="@Class">
+        @foreach (var service in _services)
+        {
+            <MudItem xs="12" md="4">
+                <MasterServiceCard Service="@service"/>
+            </MudItem>
+        }
+    </MudGrid>
+}
+

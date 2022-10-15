@@ -7,36 +7,45 @@ public class DayTimetable : AuditableEntity<Guid>, IAggregateRoot
 {
 	public DateTime StartWorkTime { get; private set; }
 	public DateTime EndWorkTime { get; private set; }
-	public List<ClientOrder>? Schedule { get; private set; }
+	private HashSet<ClientOrder> _orders;
+	public IReadOnlyCollection<ClientOrder> ClientOrders => _orders.ToList();
 
-	public DayTimetable(DateTime startWorkTime, DateTime endWorkTime)
+	private DayTimetable(){}
+
+	public static DayTimetable Create(DateTime startWorkTime, DateTime endWorkTime, bool fillDefaultOrders, double interval = 2)
 	{
-		StartWorkTime = startWorkTime;
-		EndWorkTime = endWorkTime;
+		if (startWorkTime > endWorkTime) throw new ArgumentOutOfRangeException($"{nameof(StartWorkTime)} can't be greater than {nameof(EndWorkTime)}");
+		return new()
+		{
+			StartWorkTime = startWorkTime,
+			EndWorkTime = endWorkTime,
+			_orders = fillDefaultOrders ? FillEmptySchedule(startWorkTime, endWorkTime, interval) : new()
+		};
 	}
-	public List<ClientOrder> FillEmptySchedule(double interval)
+
+	private static HashSet<ClientOrder> FillEmptySchedule(DateTime startWorkTime, DateTime endWorkTime, double interval)
 	{
-		Schedule = new List<ClientOrder>();
-		DateTime newOrderTime = StartWorkTime;
+		var defaultOrdersSet = new	HashSet<ClientOrder>();
+		DateTime newOrderTime = startWorkTime;
 		var endOrderTime = newOrderTime.AddHours(interval);
 
-		while (endOrderTime <= EndWorkTime)
+		while (endOrderTime <= endWorkTime)
 		{
-			Schedule.Add(new (newOrderTime, endOrderTime));
+			defaultOrdersSet.Add(ClientOrder.CreateEmpty(newOrderTime, endOrderTime));
 			newOrderTime = endOrderTime;
 			endOrderTime = newOrderTime.AddHours(interval);
 		}
-		return Schedule;
+		return defaultOrdersSet;
 	}
 
 	public void AddEmptyClientOrder(DateTime startTime, DateTime endTime)
 	{
-		if (Schedule == null)
-			Schedule = new ();
+		if (_orders == null)
+			throw new InvalidOperationException("Orders not loaded");
 
-		if(Schedule.Any(x => x.StartTime < endTime && startTime < x.EndTime))
+		if(_orders.Any(x => x.StartTime < endTime && startTime < x.EndTime))
 			throw new WrongClientOrderTimeRange();
 
-		Schedule.Add(new(startTime, endTime));
+		_orders.Add(ClientOrder.CreateEmpty(startTime, endTime));
 	}
 }

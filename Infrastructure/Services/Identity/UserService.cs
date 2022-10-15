@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Shared.Messages.Identity;
 using Shared.Wrapper;
 
-namespace Infrastructure.Identity;
+namespace Infrastructure.Services.Identity;
 
 public class UserService : IUserService
 {
@@ -18,8 +18,8 @@ public class UserService : IUserService
 	private readonly string _rootUser;
 	private readonly RoleManager<IdentityRole> _roleManager;
 
-	public UserService(UserManager<AppUser> userManager, 
-		IMapper mapper, 
+	public UserService(UserManager<AppUser> userManager,
+		IMapper mapper,
 		IConfiguration configuration,
 		RoleManager<IdentityRole> roleManager)
 	{
@@ -30,14 +30,7 @@ public class UserService : IUserService
 	}
 	public async Task<IResult> CreateUserAsync(IDM_001 message)
 	{
-		var user = new AppUser
-		{
-			Email = message.Email,
-			FullName = message.FullName,
-			UserName = message.Email,
-			PhoneNumber = message.PhoneNumber,
-			IsActive = true
-		};
+		var user = AppUser.Create(message.FullName, message.Email, message?.PhoneNumber);
 
 		var result = await _userManager.CreateAsync(user, message.Password);
 		if (!result.Succeeded)
@@ -46,7 +39,7 @@ public class UserService : IUserService
 		}
 
 		await _userManager.AddToRoleAsync(user, UserRoles.Basic);
-		if(user.Email == _rootUser)
+		if (user.Email == _rootUser)
 		{
 			await _userManager.AddToRoleAsync(user, UserRoles.Admin);
 			await _userManager.AddToRoleAsync(user, UserRoles.Master);
@@ -71,6 +64,22 @@ public class UserService : IUserService
 		var userDTO = _mapper.Map<IDR_003>(user);
 		await AddRolesToDto(user, userDTO);
 		return await Result<IDR_003>.SuccessAsync(userDTO);
+	}
+
+	public async Task<IResult> ToggleUserStatusAsync(IDM_009 message)
+	{
+		var user = await _userManager.Users.Where(u => u.Id == message.UserId).FirstOrDefaultAsync();
+		var isAdmin = await _userManager.IsInRoleAsync(user, UserRoles.Admin);
+		if (isAdmin)
+		{
+			return await Result.FailAsync("Невозможно изменить активность администратора");
+		}
+		if (user != null)
+		{
+			user.SetIsActiveStatus(message.ActivateUser);
+			var identityResult = await _userManager.UpdateAsync(user);
+		}
+		return await Result.SuccessAsync();
 	}
 
 	public async Task<IResult> UpdateRolesAsync(IDM_005 message)

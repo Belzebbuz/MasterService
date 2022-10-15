@@ -1,6 +1,8 @@
 ﻿using Application.Common;
 using Microsoft.AspNetCore.Http;
+using Serilog.Context;
 using Shared.Exceptions.Common;
+using Shared.Wrapper;
 using System.Net;
 
 namespace Infrastructure.Middlewares;
@@ -61,7 +63,9 @@ public class ExceptionMiddleware : IMiddleware
 					response.StatusCode = errorResult.StatusCode = (int)HttpStatusCode.InternalServerError;
 					break;
 			}
-			await response.WriteAsync(_jsonSerializer.Serialize(errorResult));
+			var stringResult = _jsonSerializer.Serialize(errorResult);
+			LogContext.PushProperty("Error", stringResult);
+			await response.WriteAsync(_jsonSerializer.Serialize(Result.Fail(stringResult)));
 		}
 	}
 }

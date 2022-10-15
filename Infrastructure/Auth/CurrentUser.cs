@@ -9,6 +9,8 @@ public class CurrentUser : ICurrentUser, ICurrentUserInitializer
 
 	public string? Name => _user?.Identity?.Name;
 
+	public string? UserId => _user?.GetUserId();
+
 	private Guid _userId = Guid.Empty;
 	public void SetCurrentUser(ClaimsPrincipal user)
 	{

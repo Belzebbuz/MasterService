@@ -1,0 +1,74 @@
+﻿@page "/service-profile/{id}"
+@attribute [Authorize(Roles = UserRoles.Master)]
+
+@if (!_isLoaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Primary">Управление услугой</MudText>
+    <MudGrid Class="mt-4">
+        @if (_service.Images != null && _service.Images.Any())
+        {
+            <MudItem xs="12" sm="4" md="3">
+                <MudPaper Elevation="25" Class="pt-5" Height="100%">
+                    <MudCarousel Style="height: 400px;" 
+                    @bind-SelectedIndex="@_imageSelectedIndex" 
+                    ShowArrows="true" ShowBullets="true" AutoCycle="true" TData="object">
+                        @foreach (var image in _service.Images)
+                        {
+                            <MudCarouselItem Transition="Transition.Slide">
+                                <div class="d-flex" style="height:100%">
+                                    <MudImage Class="mx-auto my-auto" Src="@($"data:image/jpg;base64,{image.Data}")" />
+                                </div>
+                            </MudCarouselItem>
+                        }
+                    </MudCarousel>
+
+                    <MudContainer Class="d-flex justify-center mt-5">
+                        <InputFile id="fileInput" OnChange="UploadFile" hidden />
+                        <MudButton HtmlTag="label" for="fileInput" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Добавить фото</MudButton>
+                        <MudSpacer/>
+                        <MudButton Color="Color.Secondary" OnClick="@(async () => await DeleteAsync(_imageSelectedIndex))">Удалить</MudButton>
+                    </MudContainer>
+                </MudPaper>
+            </MudItem>
+        }
+        <MudItem xs="12" sm="8" md="9">
+            <EditForm Model="@_serviceUpdateModel" OnSubmit="UpdateMasterServiceAsync">
+                <FluentValidationValidator @ref="_fluentValidationValidator" />
+                <MudCard Elevation="25">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@_service.Name</MudText>
+                            <MudText Class="mt-3">Текущая цена: @_service.CurrentPrice</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" md="12">
+                                <MudTextField @bind-Value="@_serviceUpdateModel.Name" For="@(() => _serviceUpdateModel.Name)" Label="Название" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" md="12">
+                                <MudTextField Lines="3" @bind-Value="@_serviceUpdateModel.Description" For="@(() => _serviceUpdateModel.Description)" Label="Описание" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" md="12">
+                                <MudTextField @bind-Value="@_serviceUpdateModel.NewPriceValue"
+                                          Label="Новая цена"
+                                          For="@(() => _serviceUpdateModel.NewPriceValue)"
+                                          Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" md="12">
+                                <MudDatePicker For="@(() => _serviceUpdateModel.NewPriceDateTime)" @bind-Date="_serviceUpdateModel.NewPriceDateTime" Label="С какой даты действует цена" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                    <MudCardActions Class="pb-4 pl-4">
+                        <MudButton Variant="Variant.Filled" Disabled="@(!Validated)" Color="Color.Primary" Class="ml-auto" ButtonType="ButtonType.Submit">Сохранить изменения</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+        </MudItem>
+    </MudGrid>
+}

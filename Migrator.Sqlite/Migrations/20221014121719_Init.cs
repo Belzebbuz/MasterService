@@ -31,9 +31,10 @@ namespace Migrator.Sqlite.Migrations
                     FullName = table.Column<string>(type: "TEXT", nullable: false),
                     IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
                     RefreshToken = table.Column<string>(type: "TEXT", nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "TEXT", nullable: true),
                     TelegramUserId = table.Column<long>(type: "INTEGER", nullable: true),
                     TelegramChatBotId = table.Column<long>(type: "INTEGER", nullable: true),
+                    ProfilePictureDataUrl = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -276,6 +277,7 @@ namespace Migrator.Sqlite.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     IsChanged = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ValueChangedTime = table.Column<DateTime>(type: "TEXT", nullable: true),
                     AuthorId = table.Column<string>(type: "TEXT", nullable: false),
                     ClientOrderId = table.Column<Guid>(type: "TEXT", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -353,17 +355,17 @@ namespace Migrator.Sqlite.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "c197be90-a9f4-44bd-9aad-35c6c25796f5", "0cb2cf9b-8d25-42be-ad41-e42c323e024d", "Admin", "ADMIN" });
+                values: new object[] { "42e5251f-5fc5-41b2-ac5b-1cc49cd117ed", "f0bd7c9b-98d7-4043-8739-e0020b696eca", "Basic", "BASIC" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "d0de996f-baa4-463e-81a2-7a035bc398a9", "1d15f09c-a22e-4866-b513-c2546e627e08", "Basic", "BASIC" });
+                values: new object[] { "b11754fe-34d8-4b70-84ae-f13dc648456f", "c3205d01-eb4f-4f28-a954-4132d8604e79", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "d50fe2e0-2ad4-4d7a-acc0-69f700932f41", "3d150fbf-31f6-424e-b203-b69a9c6bf635", "Master", "MASTER" });
+                values: new object[] { "edcd5632-0a70-4ebd-9b58-926134a181c0", "f29401df-5e1b-4efe-93fc-6cd77ac043de", "Master", "MASTER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -379,12 +381,12 @@ namespace Migrator.Sqlite.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
                 table: "AspNetUserClaims",
-                column: "Id");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
                 table: "AspNetUserLogins",
-                column: "Id");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",

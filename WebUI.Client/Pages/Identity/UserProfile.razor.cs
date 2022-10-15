@@ -17,9 +17,11 @@ public partial class UserProfile
 	private string _fullName;
 	private string _phoneNumber;
 	private string _email;
+	private bool _active;
 
 	private bool _loaded;
-
+	[Parameter]
+	public string ImageDataUrl { get; set; }
 	protected override async Task OnInitializedAsync()
 	{
 		var userId = Id;
@@ -32,15 +34,21 @@ public partial class UserProfile
 				_userId = user.Id;
 				_fullName = user.FullName;
 				_email = user.Email;
-				_phoneNumber = user.PhoneNumber;
+				_phoneNumber = user.PhoneNumber ?? String.Empty;
+				_active = user.IsActive;
 				UserRolesList = user.Roles;
+				var imageData = await _accountManager.GetProfilePictureAsync(_userId);
+				if (imageData.Succeeded)
+				{
+					ImageDataUrl = $"data:image/jpg;base64,{imageData.Data}";
+				}
+				if (user.FullName.Length > 0)
+				{
+					_firstLetterOfName = user.FullName[0];
+				}
 			}
 			Title = $"Профиль {_fullName}";
 			Description = _email;
-			if (_fullName.Length > 0)
-			{
-				_firstLetterOfName = _fullName[0];
-			}
 		}
 
 		_loaded = true;
@@ -53,6 +61,24 @@ public partial class UserProfile
 		if (result.Succeeded)
 		{
 			_snackBar.Add(result.Messages[0], Severity.Success);
+			_navigationManager.NavigateTo("/identity/users");
+		}
+		else
+		{
+			foreach (var error in result.Messages)
+			{
+				_snackBar.Add(error, Severity.Error);
+			}
+		}
+	}
+
+	private async Task ToggleUserStatus()
+	{
+		var request = new IDM_009 { ActivateUser = _active, UserId = Id };
+		var result = await _userManager.ToggleUserStatusAsync(request);
+		if (result.Succeeded)
+		{
+			_snackBar.Add("Статус пользователя обновлен", Severity.Success);
 			_navigationManager.NavigateTo("/identity/users");
 		}
 		else

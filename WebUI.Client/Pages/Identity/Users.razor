@@ -32,6 +32,7 @@ else{
             <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.FullName)">Полное имя</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.PhoneNumber)">Номер</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.IsActive)">Активен</MudTableSortLabel></MudTh>
             <MudTh Style="text-align:center">Профиль</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -43,6 +44,9 @@ else{
             </MudTd>
             <MudTd DataLabel="Номер">
                 <MudHighlighter Text="@context.PhoneNumber" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Активен">
+                <MudCheckBox @bind-Checked="@context.IsActive" Disabled="true"/>
             </MudTd>
             <MudTd DataLabel="Профиль" Style="text-align:center">
                 <MudTooltip Text="Посмотреть профиль">

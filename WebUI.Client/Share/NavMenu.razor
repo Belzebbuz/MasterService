@@ -2,13 +2,22 @@
 
 <UserCard />
 <MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Главная</MudNavLink>
 
     <AuthorizeView Roles="@UserRoles.Admin">
         <Authorized>
             <MudListSubheader Class="mt-2 mb-n2">Администрирование</MudListSubheader>
             <MudNavLink Href="/identity/users" Icon="@Icons.Material.Outlined.Person">
                 Пользователи
+            </MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="@UserRoles.Master">
+        <Authorized>
+            <MudListSubheader Class="mt-2 mb-n2">Мастер</MudListSubheader>
+            <MudNavLink Href="/myservices" Icon="@Icons.Material.Outlined.Margin">
+                Мои услуги
             </MudNavLink>
         </Authorized>
     </AuthorizeView>

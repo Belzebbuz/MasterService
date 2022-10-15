@@ -4,6 +4,10 @@ using Shared.Wrapper;
 using System.ComponentModel.DataAnnotations;
 
 namespace Shared.Messages.Identity;
+
+/// <summary>
+/// Запрос на регистрацию нового пользователя
+/// </summary>
 public class IDM_001 
 {
 	public string FullName { get; set; }
@@ -18,7 +22,7 @@ public class IDM_001
 
 public class IDM_001_Validator : AbstractValidator<IDM_001>
 {
-	public const string MustBeenFeeledMessage = "Поле должно быть заполнено!";
+	private const string MustBeenFeeledMessage = "Поле должно быть заполнено!";
 	public IDM_001_Validator()
 	{
 		RuleFor(message => message.FullName)

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using WebUI.Application.Extensions;
+using WebUI.Client.Pages.Identity;
+using WebUI.Infrastructure.Constants;
 
 namespace WebUI.Client.Share.Components;
 
@@ -9,8 +11,9 @@ public partial class UserCard
     private string FullName { get; set; }
     private string Email { get; set; }
     private char FirstLetterOfName { get; set; }
-
-    protected override async Task OnInitializedAsync()
+	[Parameter]
+	public string ImageDataUrl { get; set; }
+	protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
     }
@@ -22,9 +25,10 @@ public partial class UserCard
 
         Email = user.GetEmail();
         FullName = user.GetFullName();
-        if (FullName.Length > 0)
-        {
-            FirstLetterOfName = FullName[0];
-        }
-    }
+        ImageDataUrl = await _accountManager.GetCurrentUserProfileImageAsync(user.GetUserId());
+		if (FullName.Length > 0)
+		{
+			FirstLetterOfName = FullName[0];
+		}
+	}
 }

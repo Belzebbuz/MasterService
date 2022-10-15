@@ -10,9 +10,9 @@ namespace Domain.Tests
 		{
 			_masterServices = new()
 			{
-				new("Service #1", "short description"),
-				new("Service #2", "short description"),
-				new("Service #3", "short description"),
+				MasterService.Create("Service #1", "short description", 1000M, DateTime.Now.AddDays(-1)),
+				MasterService.Create("Service #2", "short description", 1200M, DateTime.Now.AddDays(-1)),
+				MasterService.Create("Service #3", "short description", 1400M, DateTime.Now.AddDays(-1)),
 			};
 		}
 
@@ -20,7 +20,7 @@ namespace Domain.Tests
 		public void GetPriceShouldNotBeNull()
 		{
 			var service = _masterServices.FirstOrDefault(x => x.Name == "Service #1");
-			service.AddPrice(DateTime.MinValue, 1500M);
+			service!.AddPrice(DateTime.Now, 1500M);
 			var actualPrice = service?.GetPrice(DateTime.Now);
 			Assert.IsNotNull(actualPrice);
 			Assert.IsTrue(actualPrice.HasValue);

@@ -2,15 +2,18 @@
 
 namespace Domain.Models;
 
-public class MasterServicePrice : AuditableEntity<Guid>, IAggregateRoot
+public class MasterServicePrice : AuditableEntity<Guid>
 {
 	public DateTime Date { get; private set; }
-	public decimal Value { get; set; }
-	public MasterServicePrice(DateTime date, decimal value)
+	public decimal Value { get; private set; }
+	internal MasterServicePrice(DateTime date, decimal value)
 	{
 		Date = date;
 		Value = value;
 	}
 
-	public static explicit operator MasterServicePrice(decimal value) => new MasterServicePrice(DateTime.MinValue, value);
+	public void SetValue(decimal value)
+	{
+		Value = value;
+	}
 }

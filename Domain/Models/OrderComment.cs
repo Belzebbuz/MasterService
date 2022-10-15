@@ -2,13 +2,14 @@
 
 namespace Domain.Models;
 
-public class OrderComment : AuditableEntity<Guid>, IAggregateRoot
+public class OrderComment : AuditableEntity<Guid>
 {
 	public string Value { get; private set; }
 	public bool IsChanged { get; private set; }
+	public DateTime? ValueChangedTime { get; set; }
 	public string AuthorId { get; private set; }
 	public virtual AppUser Author { get; private set; }
-	public OrderComment(string value, string authorId)
+	internal OrderComment(string value, string authorId)
 	{
 		Value = value;
 		AuthorId = authorId;
@@ -20,6 +21,7 @@ public class OrderComment : AuditableEntity<Guid>, IAggregateRoot
 		{
 			Value = value;
 			IsChanged = true;
+			ValueChangedTime = DateTime.Now;
 		}
 	}
 }

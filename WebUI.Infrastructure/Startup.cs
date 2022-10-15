@@ -12,6 +12,8 @@ public static class Startup
 	{
 		services.AddTransient<IAuthenticationManager, AuthenticationManager>();
 		services.AddTransient<IUserManager, UserManager>();
+		services.AddTransient<IAccountManager, AccountManager>();
+		services.AddTransient<IMasterManager, MasterManager>();
 		return services;
 	}
 }

@@ -25,11 +25,11 @@ public static class Startup
 		services
 			.AddIdentity<AppUser, IdentityRole>(options =>
 			{
-				options.Password.RequiredLength = 6;
-				options.Password.RequireDigit = false;
-				options.Password.RequireLowercase = false;
+				options.Password.RequiredLength = 8;
+				options.Password.RequireDigit = true;
+				options.Password.RequireLowercase = true;
 				options.Password.RequireNonAlphanumeric = false;
-				options.Password.RequireUppercase = false;
+				options.Password.RequireUppercase = true;
 				options.User.RequireUniqueEmail = true;
 			})
 			.AddEntityFrameworkStores<ApplicationDbContext>()

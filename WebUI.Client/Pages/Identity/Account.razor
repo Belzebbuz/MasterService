@@ -1,0 +1,13 @@
+﻿@page "/account"
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-2">Аккаунт</MudText>
+<MudText Color="Color.Surface" Class="mb-4">Управление аккаунтом</MudText>
+
+<MudTabs Elevation="25" Color="Color.Transparent" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="Профиль">
+        <Profile />
+    </MudTabPanel>
+    <MudTabPanel Text="Безопасность">
+        <Security />
+    </MudTabPanel>
+</MudTabs>

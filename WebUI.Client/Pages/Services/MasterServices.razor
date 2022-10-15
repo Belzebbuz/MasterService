@@ -1,0 +1,22 @@
+﻿@page "/myservices"
+@attribute [Authorize(Roles = UserRoles.Master)]
+
+<MudText Typo="Typo.h5" Color="Color.Primary">Мои услуги</MudText>
+@if(!_isLoaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudButton Class="mt-4" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OpenCreateServiceDialog">Добавить</MudButton>
+    <MudGrid Class="mt-4">
+        @foreach (var service in _services)
+        {
+            <MudItem xs="12" md="4">
+                <MasterServiceCard Service="@service"/>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+
