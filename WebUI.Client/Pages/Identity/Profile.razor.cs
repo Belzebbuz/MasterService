@@ -89,7 +89,9 @@ public partial class Profile
 	{
 		var parameters = new DialogParameters
 			{
-				{nameof(DeleteConfirmation.ContentText), $"{string.Format("Вы действительно хотите удалить изображение профиля {0}?", _profileModel.Email)}?"}
+				{
+					nameof(DeleteConfirmation.ContentText), $"{string.Format("Вы действительно хотите удалить изображение профиля {0}?", _profileModel.Email)}?"
+				}
 			};
 		var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
 		var dialog = _dialogService.Show<DeleteConfirmation>("Удаление", parameters, options);

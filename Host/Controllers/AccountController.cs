@@ -2,9 +2,11 @@
 using Infrastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Shared.Messages.Identity;
 using Shared.Wrapper;
 using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using IResult = Shared.Wrapper.IResult;
 
@@ -24,8 +26,19 @@ public class AccountController : BaseApiController
 	}
 
 	[HttpGet("profile-picture/{userId}")]
-	public async Task<IResult<string>> GetProfilePictureAsync(string userId)
-		=> await _accountService.GetProfilePictureAsync(userId);
+	public async Task<IActionResult> GetProfilePictureAsync(string userId)
+	{
+		var result =  await _accountService.GetProfilePictureUrlAsync(userId);
+		if(result.Succeeded)
+		{
+			var stream = new FileStream(result.Data, FileMode.Open, FileAccess.Read);
+			return File(stream, "application/octet-stream");
+		}
+		else
+		{
+			return BadRequest();
+		}
+	}
 
 	[HttpPut(nameof(UpdateProfile))]
 	public async Task<IResult> UpdateProfile(IDM_006 request) 

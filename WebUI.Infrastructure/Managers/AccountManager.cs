@@ -4,6 +4,7 @@ using Shared.Messages.Identity;
 using Shared.Wrapper;
 using System.Net.Http.Json;
 using System.Reflection;
+using System.Text;
 using WebUI.Application.Services.Managers;
 using WebUI.Infrastructure.Constants;
 using WebUI.Infrastructure.Endpoints;
@@ -29,8 +30,9 @@ public class AccountManager : IAccountManager
 
 	public async Task<IResult<string>> GetProfilePictureAsync(string userId)
 	{
-		var response = await _httpClient.GetAsync(AccountEndpoints.GetProfilePicture(userId));
-		return await response.ToResult<string>();
+		//var response = await _httpClient.GetAsync(AccountEndpoints.GetProfilePicture(userId));
+		var response = await _httpClient.GetByteArrayAsync(AccountEndpoints.GetProfilePicture(userId));
+		return await Result<string>.SuccessAsync(data: Convert.ToBase64String(response));
 	}
 
 	public async Task<IResult> UpdateProfileAsync(IDM_006 profileModel)
@@ -53,5 +55,17 @@ public class AccountManager : IAccountManager
 			return $"data:image/jpg;base64,{imageData.Data}";
 		}
 		return string.Empty;
+	}
+
+	public string ConvertToBase64(Stream stream)
+	{
+		byte[] bytes;
+		using (var memoryStream = new MemoryStream())
+		{
+			stream.CopyTo(memoryStream);
+			bytes = memoryStream.ToArray();
+		}
+
+		return Convert.ToBase64String(bytes);
 	}
 }

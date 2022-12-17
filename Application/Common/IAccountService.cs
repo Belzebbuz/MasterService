@@ -7,7 +7,8 @@ namespace Application.Common;
 public interface IAccountService : IScopedService
 {
     Task<IResult> ChangePasswordAsync(IDM_008 request, string userId);
-    Task<IResult<string>> GetProfilePictureAsync(string userId);
+    Task<Result<FileStream>> GetProfilePictureAsync(string userId);
+    Task<IResult<string>> GetProfilePictureUrlAsync(string userId);
     Task<IResult> UpdateProfileAsync(IDM_006 request, string userId);
     Task<IResult<string>> UpdateProfilePictureAsync(IDM_007 request, string userId);
 }

@@ -36,16 +36,27 @@ public class AccountService : IAccountService
 		return identityResult.Succeeded ? await Result.SuccessAsync() : await Result.FailAsync(errors);
 	}
 
-	public async Task<IResult<string>> GetProfilePictureAsync(string userId)
+	public async Task<Result<FileStream>> GetProfilePictureAsync(string userId)
+	{
+		var user = await _userManager.FindByIdAsync(userId);
+		if (user == null)
+			return await Result<FileStream>.FailAsync("Пользователь не найден");
+		if (user.ProfilePictureDataUrl == null)
+			return await Result<FileStream>.FailAsync("Изображение отсутствует");
+		//var bytes = File.ReadAllBytes(user.ProfilePictureDataUrl);
+		//var baseString = Convert.ToBase64String(bytes, 0, bytes.Length);
+		return await Result<FileStream>.SuccessAsync(data: new FileStream(user.ProfilePictureDataUrl, FileMode.Open, FileAccess.Read));
+	}
+
+	public async Task<IResult<string>> GetProfilePictureUrlAsync(string userId)
 	{
 		var user = await _userManager.FindByIdAsync(userId);
 		if (user == null)
 			return await Result<string>.FailAsync("Пользователь не найден");
 		if (user.ProfilePictureDataUrl == null)
 			return await Result<string>.FailAsync("Изображение отсутствует");
-		var bytes = File.ReadAllBytes(user.ProfilePictureDataUrl);
-		var baseString = Convert.ToBase64String(bytes, 0, bytes.Length);
-		return await Result<string>.SuccessAsync(data: baseString);
+
+		return await Result<string>.SuccessAsync(data: user.ProfilePictureDataUrl);
 	}
 
 	public async Task<IResult> UpdateProfileAsync(IDM_006 request, string userId)
